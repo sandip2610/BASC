@@ -18,7 +18,7 @@
         .edit-profile-container {
             background: #fff;
             padding: 30px 40px;
-            border-radius: 12px;
+            border-radius: 0px;
             box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
             width: 100%;
             max-width: 800px;
@@ -37,7 +37,7 @@
         form {
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 0px;
         }
         label {
             font-weight: 600;
@@ -107,7 +107,6 @@
         <form method="POST" enctype="multipart/form-data">
             {% csrf_token %}
             {{ form.as_p }}
-            <p class="warning-text">*Password change not allowed here!</p>
             <div class="button-group">
                 <a href="{% url 'profile' %}" class="btn btn-profile">Go to Profile</a>
                 <button type="submit" class="btn btn-save">Save Changes</button>

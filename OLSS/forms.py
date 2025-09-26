@@ -69,7 +69,6 @@ class ResultForm(forms.ModelForm):
         self.fields['student'].label_from_instance = lambda obj: obj.id
 
 class EditProfileForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput, required=False)
     class Meta:
         model = Student
         exclude = ['phone_number', 'password']
