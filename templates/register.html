@@ -147,8 +147,11 @@
     {% load static %}
 {% block title %}Home | Blogrator Academy{% endblock %}
 {% block content %}
-        <h1 align="center">Register</h1>
-
+ <h1 align="center">Register</h1>
+    <p style="text-align:center; font-size:14px; color:#333; margin-bottom:20px;">
+        Please fill out the form with accurate information.
+        All fields are mandatory. The form will not be accepted if any information is incorrect or incomplete.
+    </p>
     <div class="registration-container">
         {% for message in messages %}
             <p class="messages {% if message.tags %}{{ message.tags }}{% endif %}">{{ message }}</p>
