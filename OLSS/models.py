@@ -21,8 +21,11 @@ class Student(models.Model):
 
 class NoticeBoard(models.Model):
     notice_no = models.AutoField(primary_key=True)
-    notice = models.TextField()
+    notice_subject = models.TextField()
     date = models.DateField(default=date.today)
+    file = models.FileField(upload_to='notices_files/', blank=True, null=True)
+    def __str__(self):
+        return f"Notice {self.notice_no}"
 
 class ClassTimeTable(models.Model):
     CLASS_CHOICES = [

@@ -49,11 +49,12 @@ class PasswordResetForm(forms.Form):
 class NoticeBoardForm(forms.ModelForm):
     class Meta:
         model = NoticeBoard
-        fields = ['notice_no', 'notice', 'date']
+        fields = ['notice_no', 'notice_subject', 'date', 'file']
         labels = {
             'notice_no': 'notice_no',
-            'notice': 'notice',
+            'notice_subject': 'notice_subject',
             'data': 'data',
+            'file': 'file',
         }
 
 class ResultForm(forms.ModelForm):

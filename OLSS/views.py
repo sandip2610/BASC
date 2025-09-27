@@ -182,6 +182,7 @@ def password_reset(request):
     else:
         form = PasswordResetForm()
     return render(request, 'password_reset.html', {'form': form})
+
 @student_login_required
 def change_password(request):
     if request.method == 'POST':
@@ -206,7 +207,6 @@ def change_password(request):
             return redirect('login')
     return render(request, 'change_password.html')
 
-
 @student_login_required
 def base(request):
     student_id = request.session.get('student_id')
@@ -222,8 +222,10 @@ def base(request):
 def home1(request):
     student_id = request.session.get("student_id")
     student = Student.objects.get(id=student_id)
+    notices = NoticeBoard.objects.all().order_by('-date')
     context = {
-        "student_name": student.name
+        "student_name": student.name,
+        "notices": notices
     }
     return render(request, 'home1.html', context)
 
