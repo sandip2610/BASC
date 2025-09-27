@@ -6,56 +6,43 @@
   <style>
     * {margin: 0; padding: 0; box-sizing: border-box;font-family: "Segoe UI", Arial, sans-serif;}
     body {background: #f5f5f5;padding: 10px;}
-    .card {background: #fff;border-radius: 10px;padding: 15px 20px;margin-bottom: 15px;display: flex;justify-content: space-between;align-items: center;box-shadow: 0 3px 8px rgba(0,0,0,0.1);font-size: 16px;cursor: pointer;transition: 0.3s;}
+    .card-container {display: flex;gap: 15px;}
+    .card {background: #fff;border-radius: 0px !important;padding: 25px 20px !important;display: flex;justify-content: space-between;align-items: center;box-shadow: 0 3px 8px rgba(0,0,0,0.1);font-size: 16px;cursor: pointer;transition: 0.3s;flex: 1;}
     .card:hover {transform: translateY(-2px);}
     .card span {font-weight: bold;}
-    .calendar {background: #fff;border-radius: 6px;box-shadow: 0 3px 10px rgba(0,0,0,0.1);padding: 10px;max-width: 1200px;margin: auto;}
-    .calendar-header {display: flex;justify-content: space-between;align-items: center;font-weight: bold;margin-bottom: 10px;font-size: 20px;background: #e3f2fd;padding: 10px;border-radius: 2px;}
-    .calendar-header button {background: #2196f3;border: none;font-size:15px;cursor: pointer;color: #fff;padding: 5px 15px;border-radius: 6px;transition: 0.3s;}
-    .calendar-header button:hover {background: #0b7dda;}
-    .calendar-weekdays {display: grid;grid-template-columns: repeat(7, 1fr);gap: 2px;margin-bottom: 5px;}
-    .weekday {font-weight: bold;padding: 10px 0;color: #333;text-align: center;border-radius: 2px;background: #f0f0f0;}
-    .calendar-days {display: grid;grid-template-columns: repeat(7, 1fr);gap: 2px;}
-    .day {width: 100%;height: 50px;border: 1px solid #e0e0e0;border-radius: 2px;display: flex;justify-content: center;align-items: center;cursor: pointer;font-weight: 500;font-size: 20px;transition: 0.2s;background: #fafafa;}
-    .day:hover {background: #e3f2fd;}
-    .selected {background: #2196f3 !important;color: white;font-weight: bold;border: none;}
-    .sunday {background: #fdecea !important;color: #d9534f;font-weight: bold;}
-    .greeting-card {font-size: 24px;font-weight: bold;margin-bottom: 20px;padding: 10px 15px;background: #e3f2fd;color: #0b3d91;}
+    .greeting-card {font-size: 24px;font-weight: bold;margin-bottom: 20px;padding: 10px 15px;background: #b3d0f5;color: #0b3d91;}
     .greeting-card span {margin-left: 10px;}
-    <style>
-  /* Hover effect for each notice */
-  .card ul li:hover {
-      background: #e3f2fd;
-      transform: translateX(5px);
-  }
-
-  /* Scrollbar style for modern look */
-  .card::-webkit-scrollbar {
-      width: 6px;
-  }
-  .card::-webkit-scrollbar-thumb {
-      background-color: #2196f3;
-      border-radius: 3px;
-  }
-  .card::-webkit-scrollbar-track {
-      background: #f1f1f1;
-      border-radius: 3px;
-  }
+    .card ul li:hover {background: #e3f2fd;transform: translateX(5px);}
+    .card::-webkit-scrollbar {width: 6px;}
+    .card::-webkit-scrollbar-thumb {background-color: #2196f3;border-radius: 0px;}
+    .card::-webkit-scrollbar-track {background: #f1f1f1;border-radius: 0px;}
+    .welcome-section {position: relative;text-align: center;margin: 30px 0;}
+    .welcome-section img {width: 95%;height: 400px;border-radius: 0px;box-shadow: 0 4px 15px rgba(0,0,0,0.2);}
+    .welcome-section h2 {position: absolute;top: 50%;left: 50%;transform: translate(-50%, -50%);color: #fff;font-size: 48px;font-weight: bold;background: rgba(0, 0, 0, 0.4);padding: 15px 30px;border-radius: 10px;
+    }
 </style>
 </head>
 <body>
 {% extends "base.html" %}
+{% load static %}
 {% block title %}Smart School{% endblock %}
 {% block content %}
   <div class="greeting-card">
     👋 <span>Hello, {{ student_name }}</span>
   </div>
-  <div class="card">📌 Attendance (This Month) <span>85%</span></div>
-  <div class="card">📚 Homework (Incomplete) <span>4</span></div>
-  <div class="card">📝 My Pending Tasks (Today) <span>2</span></div>
-<div class="card" style="flex-direction: column; align-items: flex-start; cursor: default; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); max-height: 300px; overflow-y: auto;">
+<div class="welcome-section">
+    <img src="{% static 'img_11.png' %}" alt="School Logo">
+    <h2>Welcome to Blogrator Academy</h2>
+</div>
+{% if not student.is_teacher and not student.is_librarian %}
+<div class="card-container">
+  <div class="card">📌 Attendance (This Month) <span>{{ attendance_percent }}%</span></div>
+  <div class="card">📚 Homework (Incomplete) <span>{{ incomplete_homework }}</span></div>
+  <div class="card">📝 Pending Homework (Today) <span>{{ pending_tasks }}</span></div>
+</div>
+{% endif %}
+<div class="card" style="margin-top: 40px;flex-direction: column; align-items: flex-start; cursor: default; padding: 20px; background: #b3d0f5; border-radius: 0px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); max-height: 300px; overflow-y: auto;">
   <h3 style="margin-bottom: 15px; color: #0b3d91; font-size: 20px; border-bottom: 2px solid #e3f2fd; padding-bottom: 5px;">📢 Latest Notices</h3>
-
   {% if notices %}
       <ul style="width: 100%; list-style-type: none; padding-left: 0; margin: 0;">
           {% for notice in notices %}
@@ -75,25 +62,7 @@
       <p style="color: #555;">No notices available.</p>
   {% endif %}
 </div>
-
-  <div class="calendar">
-    <div class="calendar-header">
-      <button id="prev">&lt;</button>
-      <div id="monthYear"></div>
-      <button id="next">&gt;</button>
-    </div>
-    <div class="calendar-weekdays">
-      <div class="weekday">Sun</div>
-      <div class="weekday">Mon</div>
-      <div class="weekday">Tue</div>
-      <div class="weekday">Wed</div>
-      <div class="weekday">Thu</div>
-      <div class="weekday">Fri</div>
-      <div class="weekday">Sat</div>
-    </div>
-    <div class="calendar-days" id="calendarDays"></div>
-  </div>
-<div class="card" style="flex-direction: column; align-items: flex-start; cursor: default;">
+<div class="card" style="margin-top: 60px;flex-direction: column; align-items: flex-start; cursor: default;">
   <h3 style="margin-bottom: 10px; color: #0b3d91;">🏫 School Rules & Regulations</h3>
   <ul style="margin-left: 20px; line-height: 1.8; font-size: 15px; color: #333;">
     <li>All students must wear the complete and proper school uniform every day, ensuring neatness and discipline.</li>
@@ -108,56 +77,13 @@
     <li>Participation in co-curricular and extracurricular activities is encouraged to ensure overall growth and development of students.</li>
   </ul>
 </div>
-
+<h2 style="margin-top: 55px;margin-bottom: 15px; color: #0b3d91; font-size: 24px;">🛠 Problem Report / Contact</h2>
+<div class="card-container" style="margin-top: 20px;">
+    <div class="card" style="background: #b3d0f5;">📞 Phone: <span>+91 9876543210</span></div>
+    <div class="card" style="background: #b3d0f5;">✉️ Email: <span>blogrator@gmail.com</span></div>
+    <div class="card" style="background: #b3d0f5;">📱 WhatsApp: <span>+91 9876543210</span></div>
+</div>
   <script>
-    const monthYear = document.getElementById("monthYear");
-    const calendarDays = document.getElementById("calendarDays");
-    const prevBtn = document.getElementById("prev");
-    const nextBtn = document.getElementById("next");
-    let date = new Date();
-    function renderCalendar() {
-      const year = date.getFullYear();
-      const month = date.getMonth();
-      const firstDay = new Date(year, month, 1).getDay();
-      const lastDate = new Date(year, month + 1, 0).getDate();
-      const months = [
-        "January","February","March","April","May","June",
-        "July","August","September","October","November","December"
-      ];
-      monthYear.innerText = `${months[month]} ${year}`;
-      calendarDays.innerHTML = "";
-      for (let i = 0; i < firstDay; i++) {
-        const empty = document.createElement("div");
-        calendarDays.appendChild(empty);
-      }
-      for (let d = 1; d <= lastDate; d++) {
-        const day = document.createElement("div");
-        day.classList.add("day");
-        day.innerText = d;
-        const thisDate = new Date(year, month, d);
-        if (thisDate.getDay() === 0) {
-          day.classList.add("sunday");
-        }
-        let today = new Date();
-        if (d === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
-          day.classList.add("selected");
-        }
-        day.addEventListener("click", () => {
-          document.querySelectorAll(".day").forEach(el => el.classList.remove("selected"));
-          day.classList.add("selected");
-        });
-        calendarDays.appendChild(day);
-      }
-    }
-    prevBtn.addEventListener("click", () => {
-      date.setMonth(date.getMonth() - 1);
-      renderCalendar();
-    });
-    nextBtn.addEventListener("click", () => {
-      date.setMonth(date.getMonth() + 1);
-      renderCalendar();
-    });
-    renderCalendar();
   </script>
 {% endblock %}
 </body>

@@ -41,7 +41,6 @@ def annual_calendar(request):
     })
 def about_us(request):
     return render(request, 'about_us.html')
-
 def facilities(request):
     return render(request, 'facilities.html')
 def annual_sports(request):
@@ -222,9 +221,18 @@ def base(request):
 def home1(request):
     student_id = request.session.get("student_id")
     student = Student.objects.get(id=student_id)
+    this_month = date.today().month
+    total_days = Attendance.objects.filter(student=student, date__month=this_month).count()
+    present_days = Attendance.objects.filter(student=student, date__month=this_month, status='Present').count()
+    attendance_percent = int((present_days / total_days) * 100) if total_days > 0 else 0
+    incomplete_homework = Homework.objects.filter(deadline__gte=date.today()).count()
+    pending_tasks = Homework.objects.filter(deadline__date=date.today()).count()
     notices = NoticeBoard.objects.all().order_by('-date')
     context = {
         "student_name": student.name,
+        "attendance_percent": attendance_percent,
+        "incomplete_homework": incomplete_homework,
+        "pending_tasks": pending_tasks,
         "notices": notices
     }
     return render(request, 'home1.html', context)
