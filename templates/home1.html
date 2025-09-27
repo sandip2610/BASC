@@ -20,12 +20,17 @@
     .day:hover {background: #e3f2fd;}
     .selected {background: #2196f3 !important;color: white;font-weight: bold;border: none;}
     .sunday {background: #fdecea !important;color: #d9534f;font-weight: bold;}
+    .greeting-card {font-size: 24px;font-weight: bold;margin-bottom: 20px;padding: 10px 15px;background: #e3f2fd;color: #0b3d91;}
+    .greeting-card span {margin-left: 10px;}
   </style>
 </head>
 <body>
 {% extends "base.html" %}
 {% block title %}Smart School{% endblock %}
 {% block content %}
+  <div class="greeting-card">
+    👋 <span>Hello {{ student_name }}</span>
+  </div>
   <div class="card">📌 Attendance (This Month) <span>85%</span></div>
   <div class="card">📚 Homework (Incomplete) <span>4</span></div>
   <div class="card">📝 My Pending Tasks (Today) <span>2</span></div>

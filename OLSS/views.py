@@ -220,7 +220,12 @@ def base(request):
 
 @student_login_required
 def home1(request):
-    return render(request, 'home1.html')
+    student_id = request.session.get("student_id")
+    student = Student.objects.get(id=student_id)
+    context = {
+        "student_name": student.name
+    }
+    return render(request, 'home1.html', context)
 
 @student_login_required
 def profile(request):

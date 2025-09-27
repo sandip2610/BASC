@@ -149,8 +149,16 @@
           <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" alt="Default" class="profile-img1">
       {% endif %}
       <h3>{{ student.name }}</h3>
-      <b> Registration: {{ student.id }}</b><br>
-      <b>DOB: {{ student.dob }}</b>
+      <b>Status:
+        {% if student.is_teacher %}
+            Teacher
+        {% elif student.is_librarian %}
+            Librarian
+        {% else %}
+            Student
+        {% endif %}
+      </b> <br>
+      <b> Registration: {{ student.id }}</b>
   {% else %}
       <p>No student data found.</p>
   {% endif %}
