@@ -144,3 +144,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'sandipmandalcom01@gmail.com'
 EMAIL_HOST_PASSWORD = 'geea czqj xasg xbap'
+
+# Razorpay API keys
+RAZORPAY_KEY_ID = "rzp_test_1234567890abcdef"
+RAZORPAY_KEY_SECRET = "your_razorpay_secret"

@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import LoginForm, PasswordResetForm, ResultForm, EditProfileForm, BookForm, DocumentForm, TimelineForm, QueryForm
-from .models import Student, NoticeBoard, Attendance, ExamSchedule, Homework, HomeworkSubmission, ClassTimeTable, Result, Subject, Bus, Book, Activity, Certificate, Document, Timeline, Query, Gallery, News, Event
+from .models import Student, NoticeBoard, Attendance, ExamSchedule, Homework, HomeworkSubmission, ClassTimeTable, Result, Subject, Bus, Book, Activity, Certificate, Document, Timeline, Query, Gallery, News, Event, Course
 from django.contrib import messages
 import random
 from django.core.mail import send_mail
@@ -12,6 +12,12 @@ from django.utils.timezone import now
 from django.utils.encoding import smart_str
 from .models import CalendarEvent
 from django.utils import timezone
+import razorpay
+from django.conf import settings
+from django.shortcuts import render, redirect
+from django.http import HttpResponse
+from reportlab.pdfgen import canvas
+from io import BytesIO
 
 
 def home(request):
@@ -20,7 +26,9 @@ def home(request):
     return render(request, 'home.html')
 
 def online_course(request):
-    return render(request, 'online_course.html')
+    courses = Course.objects.all()
+    return render(request, 'online_course.html', {'courses': courses})
+
 def events(request):
     today = timezone.now().date()
     upcoming_events = Event.objects.filter(date__gte=today).order_by('date')
@@ -615,3 +623,57 @@ def delete_file(request, pk):
     obj = get_object_or_404(DownloadFile, pk=pk)
     obj.delete()
     return redirect("downloads")
+
+
+@student_login_required
+def fees(request):
+    student_id = request.session.get("student_id")
+    student = get_object_or_404(Student, id=student_id)
+    if request.method == "POST":
+        amount_str = request.POST.get("amount", "").strip()
+        method = request.POST.get("method", "").strip()
+        if not amount_str:
+            return render(request, "fees.html", {"error": "Please select an amount.", "student": student})
+        if not method:
+            return render(request, "fees.html", {"error": "Please select a payment method.", "student": student})
+        try:
+            amount = int(amount_str)
+        except ValueError:
+            return render(request, "fees.html", {"error": "Invalid amount.", "student": student})
+        if method == "razorpay":
+            import razorpay
+            client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
+            payment = client.order.create({"amount": amount*100, "currency": "INR", "payment_capture": "1"})
+            request.session['payment_amount'] = amount
+            request.session['payment_method'] = method
+            return render(request, "payment_razorpay.html", {"payment": payment, "key_id": settings.RAZORPAY_KEY_ID, "student": student})
+        elif method == "paypal":
+            return redirect("/paypal_checkout/")
+        elif method == "stripe":
+            return redirect("/stripe_checkout/")
+        elif method == "phonepe":
+            return redirect("/phonepe_checkout/")
+    return render(request, "fees.html", {"student": student})
+@student_login_required
+def payment_success(request):
+    student_id = request.session.get("student_id")
+    student = get_object_or_404(Student, id=student_id)
+    amount = request.session.get("payment_amount", 0)
+    method = request.session.get("payment_method", "N/A")
+    buffer = BytesIO()
+    p = canvas.Canvas(buffer)
+    p.setFont("Helvetica-Bold", 16)
+    p.drawString(200, 800, "Smart School - Payment Receipt")
+    p.setFont("Helvetica", 12)
+    p.drawString(50, 760, f"Student: {student.name}")
+    p.drawString(50, 740, f"ID: {student.id}")
+    p.drawString(50, 720, f"Class: {student.student_class}")
+    p.drawString(50, 700, f"Amount Paid: ₹{amount}")
+    p.drawString(50, 680, f"Method: {method}")
+    p.drawString(50, 660, f"Transaction ID: XXXXXXXX")
+    p.showPage()
+    p.save()
+    buffer.seek(0)
+    response = HttpResponse(buffer, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename="receipt.pdf"'
+    return response
