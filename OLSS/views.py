@@ -23,7 +23,7 @@ from io import BytesIO
 def home(request):
     if request.session.get('student_id'):
         return redirect('home1')
-    return render(request, 'home.html')
+    return render(request, 'Home.html')
 
 def online_course(request):
     courses = Course.objects.all()
